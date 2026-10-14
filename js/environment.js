@@ -1,5 +1,6 @@
-/* 環境系統：晝夜光照、天氣、雨雪粒子、閃電 */
-'use strict';
+/* 環境系統：晝夜光照、天氣、雨雪花瓣粒子、閃電 */
+import * as THREE from 'three';
+import { TAU, clamp, lerp, smoothstep, rand, makeCanvasTexture, softDotTexture } from './util.js';
 
 const WEATHERS = {
   clear:  { sunDim: 1.00, fogNear: 60,  fogFar: 6000, gray: 0.00, rain: 0, snow: 0, wet: 0.00, gSnow: 0, cloudA: 0.55, stormA: 0.00, thunder: 0, petals: 0 },
@@ -123,7 +124,7 @@ function createEnvironment(scene, refs){
   }
   petalGeo.setAttribute('position', new THREE.BufferAttribute(petalPos, 3).setUsage(THREE.DynamicDrawUsage));
   const petalMat = new THREE.PointsMaterial({
-    size: 0.36,
+    size: 0.36, color: 0xffa8c6,
     map: makeCanvasTexture(64, 64, (g) => {
       g.translate(32, 32);
       g.rotate(0.6);
@@ -304,3 +305,5 @@ function createEnvironment(scene, refs){
     onTime(cb){ onTimeCb = cb; }
   };
 }
+
+export { createEnvironment };

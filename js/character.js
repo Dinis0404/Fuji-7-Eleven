@@ -1,5 +1,6 @@
 /* 玩家角色：低多邊形小旅人 + 行走動畫 + 碰撞 */
-'use strict';
+import * as THREE from 'three';
+import { TAU, clamp, lerp } from './util.js';
 
 function createCharacter(scene){
   const M = {
@@ -148,3 +149,5 @@ function createCharacter(scene){
 
   return { root, state: S, update };
 }
+
+export { createCharacter };

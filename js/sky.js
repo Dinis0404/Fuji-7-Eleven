@@ -1,5 +1,6 @@
 /* 天空：漸層天幕、太陽光暈、月亮、星星、雲層 */
-'use strict';
+import * as THREE from 'three';
+import { TAU, rand, makeCanvasTexture, cloudTexture, glowTexture } from './util.js';
 
 function createSky(scene){
   const u = {
@@ -158,3 +159,5 @@ function createSky(scene){
   };
   return api;
 }
+
+export { createSky };

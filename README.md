@@ -6,11 +6,14 @@
 
 ## 怎麼開始
 
-- **方法一（最簡單）**：直接雙擊 `index.html` 用瀏覽器開啟（Chrome / Edge）。
-- **方法二**：在本資料夾執行 `python -m http.server 8000`，再到瀏覽器開
-  <http://localhost:8000>。
+- **Windows**：雙擊 `啟動遊戲.bat`（會自動起本機伺服器並開瀏覽器）
+- **有 Python**：在本資料夾執行 `python -m http.server 8000`，開 <http://localhost:8000>
+- **有 Node**：`npx serve .`
 
-不需要安裝任何套件 — `libs/three.min.js` 已內建，完全離線可玩。
+> 場景使用 ES modules，需要透過 HTTP 開啟（直接雙擊 index.html 會空白）。
+> 部署到 Vercel / GitHub Pages 等靜態主機則完全不用設定。
+
+不需要安裝任何套件 — three.js 與後處理模組都已內建於 `libs/`，完全離線可玩。
 
 ## 操作
 
@@ -66,15 +69,17 @@ vercel --prod   # 上正式環境
 ## 檔案結構
 
 ```
-index.html          頁面與 UI
-style.css           介面樣式
-libs/three.min.js   three.js r149（離線內建）
-js/util.js          共用工具（貼圖、合併幾何）
-js/world.js         街道、7-Eleven、房屋、電線桿、湖、富士山
-js/sky.js           天空、日月星辰、雲
-js/character.js     玩家角色與控制
-js/environment.js   晝夜光照、天氣、雨雪粒子
-js/main.js          渲染迴圈、輸入、UI 綁定
+index.html            頁面與 UI（importmap + ES modules）
+style.css             介面樣式
+啟動遊戲.bat           Windows 一鍵啟動
+libs/three.module.js  three.js r149（離線內建）
+libs/addons/          後處理模組（bloom 泛光）
+js/util.js            共用工具（貼圖、合併幾何）
+js/world.js           街道、7-Eleven、房屋、電線桿、湖、富士山
+js/sky.js             天空、日月星辰、雲
+js/character.js       玩家角色與控制
+js/environment.js     晝夜光照、天氣、雨雪花瓣粒子
+js/main.js            渲染迴圈、bloom、輸入、UI 綁定
 ```
 
 小技巧：點「📸 經典機位」可以站到重現打卡照的視角（7-11 在左、

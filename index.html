@@ -60,12 +60,13 @@
   </div>
 </div>
 
-<script src="libs/three.min.js"></script>
-<script src="js/util.js"></script>
-<script src="js/world.js"></script>
-<script src="js/sky.js"></script>
-<script src="js/character.js"></script>
-<script src="js/environment.js"></script>
-<script src="js/main.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "./libs/three.module.js"
+  }
+}
+</script>
+<script type="module" src="./js/main.js"></script>
 </body>
 </html>

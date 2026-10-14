@@ -1,9 +1,10 @@
 /* 共用小工具 */
-'use strict';
+import * as THREE from 'three';
 
 const TAU = Math.PI * 2;
-/* 啟用正確的 sRGB 色彩管理（r149），讓顏色所見即所得 */
+/* 啟用正確的 sRGB 色彩管理，讓顏色所見即所得 */
 if (THREE.ColorManagement) THREE.ColorManagement.legacyMode = false;
+
 function clamp(x, a, b){ return x < a ? a : (x > b ? b : x); }
 function lerp(a, b, t){ return a + (b - a) * t; }
 function smoothstep(a, b, x){ const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); }
@@ -15,7 +16,7 @@ function makeCanvasTexture(w, h, draw){
   draw(c.getContext('2d'), w, h);
   const t = new THREE.CanvasTexture(c);
   t.encoding = THREE.sRGBEncoding;
-  t.anisotropy = 4;
+  t.anisotropy = 8;
   return t;
 }
 
@@ -104,3 +105,8 @@ function textTexture(text, bg, fg, w, h, fontSize, vertical){
     }
   });
 }
+
+export {
+  TAU, clamp, lerp, smoothstep, rand,
+  makeCanvasTexture, mergeGeoms, glowTexture, softDotTexture, cloudTexture, textTexture
+};
