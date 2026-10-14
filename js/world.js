@@ -4,7 +4,7 @@
 import * as THREE from 'three';
 import { TAU, rand, makeCanvasTexture, mergeGeoms, glowTexture, textTexture } from './util.js';
 
-const FUJI = { x: 0, z: -3900, R: 2100, H: 1150 };
+const FUJI = { x: -350, z: -3700, R: 2200, H: 2600 };
 
 function createWorld(scene){
   const colliders = [];
@@ -15,8 +15,8 @@ function createWorld(scene){
 
   const world = {
     colliders, glow, snowOverlays,
-    spawn: new THREE.Vector3(5, 0, 22),
-    classic: { pos: new THREE.Vector3(0.6, 0, 1.5), yaw: 0, pitch: 0.09, dist: 4.4 },
+    spawn: new THREE.Vector3(6, 0, 4),
+    classic: { pos: new THREE.Vector3(0.6, 0, 7.2), yaw: 0.02, pitch: 0.1, dist: 4.4 },
     groundHeightAt,
     fujiUniforms: null
   };
@@ -112,7 +112,7 @@ function createWorld(scene){
     g.fillStyle = 'rgba(235,237,240,0.92)';
     for (let y = 0; y < 512; y += 96) g.fillRect(0, y + 12, 128, 56);
   });
-  for (const cx of [0, -40]){
+  for (const cx of [-55, 45]){
     const cw = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 11.4),
       new THREE.MeshStandardMaterial({ map: cwTex, transparent: true, roughness: 0.9, depthWrite: false }));
     cw.rotation.x = -Math.PI / 2;
@@ -164,8 +164,14 @@ function createWorld(scene){
       g.fillRect(Math.random() * 256, Math.random() * 512, rand(1, 3), rand(1, 3));
     }
     g.globalAlpha = 1;
-    g.fillStyle = 'rgba(235,237,240,0.8)';   // 停車格線（垂直格）
-    for (let x = 20; x < 256; x += 42) g.fillRect(x, 10, 4, 492);
+    g.fillStyle = 'rgba(235,237,240,0.8)';   // 斜角停車格線
+    g.lineWidth = 4;
+    for (let x = 34; x < 256; x += 52){
+      g.beginPath();
+      g.moveTo(x, 10);
+      g.lineTo(x + 62, 502);
+      g.stroke();
+    }
   });
   const parkMat = new THREE.MeshStandardMaterial({ map: parkTex, roughness: 0.95 });
   world.parkMat = parkMat;
@@ -201,36 +207,35 @@ function createWorld(scene){
     g.lineTo(x + 99 * s, y + 118 * s);
     g.stroke();
   }
-  const logoTex = makeCanvasTexture(1024, 256, (g) => {
+  const logoTex = makeCanvasTexture(768, 256, (g) => {
     g.fillStyle = '#fbfbf9';
-    g.fillRect(0, 0, 1024, 256);
+    g.fillRect(0, 0, 768, 256);
     g.strokeStyle = '#d8d8d4';
-    g.lineWidth = 8;
-    g.strokeRect(4, 4, 1016, 248);
-    draw7Logo(g, 70, 66, 1.15);
+    g.lineWidth = 6;
+    g.strokeRect(3, 3, 762, 250);
+    draw7Logo(g, 40, 52, 1.15);
     g.fillStyle = '#009342';
-    g.font = '800 italic 96px "Arial Black", Arial, sans-serif';
+    g.font = '800 italic 100px "Arial Black", Arial, sans-serif';
     g.textBaseline = 'middle';
-    g.fillText('ELEVEN', 330, 118);
-    g.fillStyle = '#0e5a3c';
-    g.font = '700 52px "Yu Gothic","Meiryo",sans-serif';
-    g.fillText('セブン-イレブン', 660, 205);
+    g.fillText('ELEVEN', 300, 136);
   });
 
-  /* 三色橫帶（簷板） */
+  /* 三色橫帶（簷板）—— 實景：白底，上下緣各一條細三色線（橘上綠下） */
   const fasciaTex = makeCanvasTexture(2048, 176, (g) => {
     g.fillStyle = '#f8f8f6';
     g.fillRect(0, 0, 2048, 176);
-    g.fillStyle = '#00a95c';
-    g.fillRect(0, 16, 2048, 30);
     g.fillStyle = '#f36f21';
-    g.fillRect(0, 54, 2048, 30);
-    g.fillStyle = '#e60012';
-    g.fillRect(0, 92, 2048, 30);
-    g.fillStyle = 'rgba(0,0,0,0.12)';
-    g.fillRect(0, 168, 2048, 8);
+    g.fillRect(0, 8, 2048, 14);
+    g.fillStyle = '#00a95c';
+    g.fillRect(0, 26, 2048, 14);
+    g.fillStyle = '#f36f21';
+    g.fillRect(0, 136, 2048, 14);
+    g.fillStyle = '#00a95c';
+    g.fillRect(0, 154, 2048, 14);
+    g.fillStyle = 'rgba(0,0,0,0.14)';
+    g.fillRect(0, 170, 2048, 6);
   });
-  /* 玻璃櫥窗 */
+  /* 玻璃櫥窗（門在中央偏右 ~57%） */
   const glassTex = makeCanvasTexture(2048, 512, (g) => {
     g.fillStyle = '#152731';
     g.fillRect(0, 0, 2048, 512);
@@ -247,16 +252,16 @@ function createWorld(scene){
     g.restore();
     g.fillStyle = '#0a141a';
     for (let x = 0; x <= 2048; x += 186) g.fillRect(x - 5, 0, 10, 512);
-    /* 玻璃門（偏左雙開） */
+    /* 玻璃門（中央偏右） */
     g.fillStyle = '#cfd8dc';
-    g.fillRect(700, 6, 290, 506);
+    g.fillRect(1020, 6, 310, 506);
     g.fillStyle = '#24404e';
-    g.fillRect(712, 18, 128, 494);
-    g.fillRect(850, 18, 128, 494);
+    g.fillRect(1032, 18, 136, 494);
+    g.fillRect(1182, 18, 136, 494);
     g.fillStyle = '#e8eef0';
-    g.fillRect(836, 210, 10, 120);
-    g.fillRect(852, 210, 10, 120);
-    /* 海報 */
+    g.fillRect(1160, 210, 10, 120);
+    g.fillRect(1176, 210, 10, 120);
+    /* 海報（兩側群組） */
     const poster = (x, c1, c2) => {
       g.fillStyle = '#f2f2ee';
       g.fillRect(x, 220, 62, 220);
@@ -270,18 +275,15 @@ function createWorld(scene){
     poster(120, '#e0503a', '#2a6496');
     poster(300, '#2e8b57', '#e0503a');
     poster(480, '#e8a03a', '#333333');
-    poster(1120, '#d81b60', '#ffffff');
-    poster(1300, '#1e88e5', '#ffffff');
-    poster(1480, '#e53935', '#ffd54f');
-    poster(1660, '#43a047', '#ffffff');
-    poster(1840, '#8e24aa', '#ffffff');
+    poster(660, '#d81b60', '#ffffff');
+    poster(1420, '#e53935', '#ffd54f');
+    poster(1600, '#1e88e5', '#ffffff');
+    poster(1780, '#43a047', '#ffffff');
   });
   const interiorTex = makeCanvasTexture(2048, 512, (g) => {
-    g.fillStyle = '#000';
+    g.fillStyle = '#2a2a28';
     g.fillRect(0, 0, 2048, 512);
-    g.fillStyle = '#33271a';
-    g.fillRect(0, 0, 2048, 512);
-    g.fillStyle = '#fff3cf';
+    g.fillStyle = '#ffffff';
     g.fillRect(0, 8, 2048, 40);
     const items = ['#e5533d', '#f2c94c', '#4aa3df', '#66bb6a', '#efefef', '#f28cb1'];
     for (let x = 30; x < 2020; x += 26){
@@ -293,28 +295,33 @@ function createWorld(scene){
       }
     }
     for (let y = 106; y < 500; y += 56){
-      g.fillStyle = '#ffe3a6';
+      g.fillStyle = '#ffffff';
       g.fillRect(20, y, 2008, 16);
     }
     g.fillStyle = '#0a0a0a';
     for (let x = 0; x <= 2048; x += 186) g.fillRect(x - 5, 0, 10, 512);
-    g.fillRect(700, 6, 290, 506);
-    g.fillStyle = '#ffdf9e';
-    g.fillRect(712, 18, 128, 494);
-    g.fillRect(850, 18, 128, 494);
+    g.fillRect(1020, 6, 310, 506);
+    g.fillStyle = '#fffdf6';
+    g.fillRect(1032, 18, 136, 494);
+    g.fillRect(1182, 18, 136, 494);
     g.fillStyle = '#0a0a0a';
-    g.fillRect(838, 18, 14, 494);
-    g.fillRect(712, 260, 266, 20);
+    g.fillRect(1168, 18, 14, 494);
+    g.fillRect(1032, 260, 286, 20);
   });
 
-  /* 店體 */
+  /* 店體（寬:高 ≈ 4.2:1 的扁長單層建築） */
   const storeMat = new THREE.MeshStandardMaterial({ color: 0xe9eae6, roughness: 0.8 });
-  const storeBox = new THREE.Mesh(new THREE.BoxGeometry(17, 4.3, 8), storeMat);
-  storeBox.position.set(0, 2.15, -18);
+  const storeBox = new THREE.Mesh(new THREE.BoxGeometry(17, 4.0, 8), storeMat);
+  storeBox.position.set(0, 2.0, -18);
   A(storeBox);
-  const parapet = new THREE.Mesh(new THREE.BoxGeometry(17.16, 0.5, 8.16), storeMat);
-  parapet.position.set(0, 4.3, -18);
+  const parapet = new THREE.Mesh(new THREE.BoxGeometry(17.16, 0.3, 8.16), storeMat);
+  parapet.position.set(0, 4.15, -18);
   A(parapet);
+  /* 屋頂邊緣深色壓邊（實景特徵） */
+  const roofCapMat = new THREE.MeshStandardMaterial({ color: 0x35393e, roughness: 0.85 });
+  const roofCap = new THREE.Mesh(new THREE.BoxGeometry(17.24, 0.1, 8.24), roofCapMat);
+  roofCap.position.set(0, 4.33, -18);
+  A(roofCap);
   addCol(-8.7, 8.7, -22.2, -13.3);
 
   /* 玻璃（含夜間發光的店內） */
@@ -323,8 +330,8 @@ function createWorld(scene){
     emissiveIntensity: 0.1, roughness: 0.45, metalness: 0.1
   });
   facadeMat.userData = { day: 0.1, night: 1.3 };
-  const facade = new THREE.Mesh(new THREE.PlaneGeometry(17, 2.8), facadeMat);
-  facade.position.set(0, 1.47, -13.94);
+  const facade = new THREE.Mesh(new THREE.PlaneGeometry(17, 2.9), facadeMat);
+  facade.position.set(0, 1.52, -13.94);
   A(facade, false, false);
   glow.signMats.push(facadeMat);
 
@@ -336,37 +343,37 @@ function createWorld(scene){
   fasciaMat.userData = { day: 0.06, night: 0.6 };
   glow.signMats.push(fasciaMat);
   const white = new THREE.MeshStandardMaterial({ color: 0xd9dcd8, roughness: 0.8 });
-  const fascia = new THREE.Mesh(new THREE.BoxGeometry(17.2, 1.34, 0.7),
+  const fascia = new THREE.Mesh(new THREE.BoxGeometry(17.2, 1.03, 0.7),
     [white, white, white, white, fasciaMat, white]);
-  fascia.position.set(0, 3.58, -13.72);
+  fascia.position.set(0, 3.48, -13.72);
   A(fascia);
   /* 簷板底發光燈槽 */
   const soffitMat = new THREE.MeshStandardMaterial({ color: 0xfff6e6, emissive: 0xfff3da, emissiveIntensity: 0.15, roughness: 0.8 });
   soffitMat.userData = { day: 0.15, night: 1.5 };
   glow.signMats.push(soffitMat);
   const soffit = new THREE.Mesh(new THREE.BoxGeometry(16.8, 0.06, 0.66), soffitMat);
-  soffit.position.set(0, 2.9, -13.74);
+  soffit.position.set(0, 2.94, -13.74);
   A(soffit, false, false);
 
-  /* 中央 7 識別燈箱 */
+  /* 7 識別燈箱（中央偏左 ~42%） */
   const roofSignMat = new THREE.MeshStandardMaterial({ map: logoTex, emissive: 0xffffff, emissiveMap: logoTex, emissiveIntensity: 0.35, roughness: 0.6 });
   roofSignMat.userData = { day: 0.35, night: 2.2 };
   glow.signMats.push(roofSignMat);
-  const faciaSign = new THREE.Mesh(new THREE.BoxGeometry(3.6, 1.1, 0.22),
+  const faciaSign = new THREE.Mesh(new THREE.BoxGeometry(3.0, 0.95, 0.22),
     [white, white, white, white, roofSignMat, roofSignMat]);
-  faciaSign.position.set(0, 3.6, -13.3);
+  faciaSign.position.set(-1.4, 3.48, -13.3);
   A(faciaSign);
 
   /* 屋頂設備與天線 */
   for (const [ax, az] of [[-6, -20], [-3, -16.8], [5, -19.6]]){
     const ac = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.55, 1.1),
       new THREE.MeshStandardMaterial({ color: 0x9aa0a2, roughness: 0.9 }));
-    ac.position.set(ax, 4.82, az);
+    ac.position.set(ax, 4.66, az);
     A(ac);
   }
   const antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 2.4, 6),
     new THREE.MeshStandardMaterial({ color: 0x6a7076, roughness: 0.6, metalness: 0.5 }));
-  antenna.position.set(7.6, 5.7, -20.5);
+  antenna.position.set(7.6, 5.6, -20.5);
   A(antenna);
 
   /* 販賣機（店右側）＋ 冰櫃 */
@@ -409,14 +416,39 @@ function createWorld(scene){
     scene.add(grp);
     return grp;
   }
-  vendingMachine(7.5, -13.1, 0, '#c62828');
-  vendingMachine(6.2, -13.1, 0, '#1565c0');
-  addCol(5.6, 8.2, -13.6, -12.6);
+  vendingMachine(9.3, -13.05, 0, '#c62828');
+  vendingMachine(10.5, -13.05, 0, '#1565c0');
+  addCol(8.7, 11.1, -13.5, -12.5);
   const icebox = new THREE.Mesh(new THREE.BoxGeometry(1.1, 1.05, 0.7),
     new THREE.MeshStandardMaterial({ color: 0xf2f2ee, roughness: 0.5 }));
-  icebox.position.set(4.8, 0.53, -13.3);
+  icebox.position.set(11.9, 0.53, -13.2);
   A(icebox);
-  addCol(4.2, 5.4, -13.7, -12.9);
+  addCol(11.3, 12.5, -13.6, -12.8);
+
+  /* 店前綠色低護欄（實景特徵，門口留通道） */
+  {
+    const fenceMat = new THREE.MeshStandardMaterial({ color: 0x2f7d4a, roughness: 0.6, metalness: 0.3 });
+    const fgeoms = [];
+    const seg = (x1, x2) => {
+      const len = x2 - x1;
+      for (let px = x1; px <= x2 + 0.01; px += 2.6){
+        const p = new THREE.CylinderGeometry(0.035, 0.035, 0.62, 6);
+        p.translate(Math.min(px, x2), 0.31, -13.35);
+        fgeoms.push(p);
+      }
+      for (const ry of [0.18, 0.36, 0.54]){
+        const r = new THREE.BoxGeometry(len, 0.05, 0.03);
+        r.translate((x1 + x2) / 2, ry, -13.35);
+        fgeoms.push(r);
+      }
+      addCol(x1 - 0.05, x2 + 0.05, -13.44, -13.26);
+    };
+    seg(-8.2, -0.5);
+    seg(3.5, 8.2);
+    const fence = new THREE.Mesh(mergeGeoms(fgeoms), fenceMat);
+    fence.castShadow = true;
+    scene.add(fence);
+  }
 
   /* 阻車柱 */
   for (const bx of [-6, -3, 0, 3, 6]){
@@ -426,12 +458,22 @@ function createWorld(scene){
     A(b);
   }
 
-  /* 促銷立牌 */
-  const banner = new THREE.Mesh(new THREE.BoxGeometry(0.7, 1.8, 0.06),
-    new THREE.MeshStandardMaterial({ map: textTexture('セール開催中', '#e5511e', '#ffffff', 128, 320, 34, true), roughness: 0.8 }));
-  banner.position.set(6.9, 1.05, -6.4);
-  banner.rotation.y = -0.4;
-  A(banner);
+  /* 停車場繳費機柱（左側，實景細節） */
+  {
+    const pmMat = new THREE.MeshStandardMaterial({ color: 0xb8bcc0, roughness: 0.5, metalness: 0.4 });
+    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 2.3, 8), pmMat);
+    post.position.set(-8.4, 1.15, -7.4);
+    A(post);
+    const box = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.7, 0.3),
+      new THREE.MeshStandardMaterial({ color: 0x3a4148, roughness: 0.6 }));
+    box.position.set(-8.4, 1.75, -7.4);
+    A(box);
+    const pSign = new THREE.Mesh(new THREE.PlaneGeometry(0.55, 0.55),
+      new THREE.MeshStandardMaterial({ map: textTexture('P', '#1565c0', '#ffffff', 96, 96, 64), roughness: 0.7 }));
+    pSign.position.set(-8.4, 2.75, -7.4);
+    scene.add(pSign);
+    addCol(-8.75, -8.05, -7.75, -7.05);
+  }
 
   /* 立柱招牌（路口東側） */
   const pylonPole = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.11, 4.4, 10),
@@ -613,13 +655,43 @@ function createWorld(scene){
     scene.add(wiresMesh);
   }
 
+  /* ================= 右側電線桿（實景：電線向左橫越畫面右半部） ================= */
+  {
+    const poleMat2 = new THREE.MeshStandardMaterial({ color: 0x565b62, roughness: 0.9 });
+    const poleAt = (x, z) => {
+      const p = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.14, 8.6, 8), poleMat2);
+      p.position.set(x, 4.3, z);
+      p.castShadow = true;
+      scene.add(p);
+      const arm = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.09, 0.09), poleMat2);
+      arm.position.set(x, 7.9, z);
+      scene.add(arm);
+      const arm2 = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.08, 0.08), poleMat2);
+      arm2.position.set(x, 7.1, z);
+      scene.add(arm2);
+      addCol(x - 0.3, x + 0.3, z - 0.3, z + 0.3);
+    };
+    poleAt(15.5, -15.5);
+    poleAt(-19, -15.8);
+    const wgeoms = [];
+    const wire2 = (ax, ay, az, bx, by, bz, sag) => {
+      const mid = new THREE.Vector3((ax + bx) / 2, (ay + by) / 2 - sag, (az + bz) / 2);
+      const curve = new THREE.QuadraticBezierCurve3(new THREE.Vector3(ax, ay, az), mid, new THREE.Vector3(bx, by, bz));
+      wgeoms.push(new THREE.TubeGeometry(curve, 14, 0.028, 4));
+    };
+    for (const off of [-0.9, 0, 0.9]) wire2(15.5 + off, 7.88, -15.5, -19 + off, 7.7, -15.8, 1.3);
+    wire2(15.5, 7.08, -15.5, -19, 6.9, -15.8, 1.0);
+    const wires2 = new THREE.Mesh(mergeGeoms(wgeoms), poleMat2);
+    scene.add(wires2);
+  }
+
   /* ================= 路燈（南側） ================= */
   {
     const poleMat = new THREE.MeshStandardMaterial({ color: 0x6a7076, roughness: 0.6, metalness: 0.5 });
     const bulbMat = new THREE.MeshStandardMaterial({ color: 0xfff6e0, emissive: 0xffe9b8, emissiveIntensity: 0.05 });
     glow.lampBulbMat = bulbMat;
     const glowTex = glowTexture();
-    for (const lx of [-60, -20, 20, 60]){
+    for (const lx of [-70, -30, 30, 70]){
       const grp = new THREE.Group();
       grp.position.set(lx, 0, 8.4);
       grp.rotation.y = -Math.PI / 2;   // 燈臂朝北（馬路）
@@ -775,8 +847,8 @@ function createWorld(scene){
     const ez = Math.abs(Math.sin(rotY)) > 0.5 ? 2.3 : 1.1;
     addCol(x - ex, x + ex, z - ez, z + ez);
   }
-  car(0xc9ccd0, -4.23, -10.6, 0);       // 銀色輕型車（照片同款位置，車頭朝店）
-  car(0x8a1f1f, 4.23, -10.6, Math.PI);
+  car(0xe8eaea, -5.0, -10.4, 1.07);     // 白色輕型車（照片同款：左側、車頭朝右）
+  car(0x8a1f1f, 1.3, -10.4, 1.07);
   car(0x3a5a8a, -35, 4.6, Math.PI / 2); // 路邊停車
 
   /* ================= 東側小路 + 河口湖 ================= */
@@ -840,6 +912,19 @@ function createWorld(scene){
     pts.push(new THREE.Vector2(32, FUJI.H - 5));
     pts.push(new THREE.Vector2(0, FUJI.H - 14));
     const fujiGeo = new THREE.LatheGeometry(pts, 72);
+    /* 東側（畫面右側）山肩較低且平緩 —— 實景山脊線向右緩降 */
+    {
+      const p = fujiGeo.attributes.position;
+      for (let i = 0; i < p.count; i++){
+        const x = p.getX(i);
+        if (x > 0){
+          const t = Math.min(x / (FUJI.R * 0.95), 1);
+          const f = t * t * (3 - 2 * t);
+          p.setY(i, p.getY(i) * (1 - 0.24 * f));
+        }
+      }
+      fujiGeo.computeVertexNormals();
+    }
     const fujiUniforms = {
       uBody: { value: new THREE.Color(0x5d7484) },
       uSnow: { value: new THREE.Color(0xffffff) },
@@ -876,8 +961,8 @@ function createWorld(scene){
         void main(){
           float h = clamp(vW.y / uH, 0.0, 1.0);
           float n1 = noise(vW.xz * 0.012) * 0.6 + noise(vW.xz * 0.06) * 0.4;
-          float sl = 0.72 + (n1 - 0.5) * 0.1;
-          float snow = smoothstep(sl, sl + 0.07, h + (n1 - 0.5) * 0.08);
+          float sl = 0.55 + (n1 - 0.5) * 0.1;
+          float snow = smoothstep(sl, sl + 0.09, h + (n1 - 0.5) * 0.08);
           vec3 col = mix(uBody, uSnow, snow);
           col *= (0.92 + 0.16 * noise(vW.xz * 0.02));
           float l = clamp(dot(normalize(vN), normalize(uSunDir)), 0.0, 1.0);

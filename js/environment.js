@@ -168,15 +168,15 @@ function createEnvironment(scene, refs){
 
   /* ============ 調色盤 ============ */
   const C = {
-    dayTop: new THREE.Color(0x3d7cd6), nightTop: new THREE.Color(0x070b18), goldTop: new THREE.Color(0x54589e),
-    dayHor: new THREE.Color(0xcfe3f2), nightHor: new THREE.Color(0x141d33), goldHor: new THREE.Color(0xff9a5e),
+    dayTop: new THREE.Color(0x3d7cd6), nightTop: new THREE.Color(0x070b18), goldTop: new THREE.Color(0x5a5f8f),
+    dayHor: new THREE.Color(0xcfe3f2), nightHor: new THREE.Color(0x141d33), goldHor: new THREE.Color(0xe8a8bc),
     grayDayTop: new THREE.Color(0x8e99a4), grayNightTop: new THREE.Color(0x232830),
     grayDayHor: new THREE.Color(0xaab3bc), grayNightHor: new THREE.Color(0x2a2f38),
-    sunHigh: new THREE.Color(0xfff2df), sunLow: new THREE.Color(0xff8f4a),
+    sunHigh: new THREE.Color(0xfff2df), sunLow: new THREE.Color(0xff9d78),
     moonCol: new THREE.Color(0x8fa3d6),
-    fujiSnowDay: new THREE.Color(0xffffff), fujiSnowGold: new THREE.Color(0xffd2b8), fujiSnowNight: new THREE.Color(0x2c3752),
-    fujiBodyDay: new THREE.Color(0x5d7484), fujiBodyGold: new THREE.Color(0x5f5168), fujiBodyNight: new THREE.Color(0x101a2e),
-    cloudDay: new THREE.Color(0xffffff), cloudGold: new THREE.Color(0xffc9a0), cloudNight: new THREE.Color(0x39445c),
+    fujiSnowDay: new THREE.Color(0xffffff), fujiSnowGold: new THREE.Color(0xf2c8d8), fujiSnowNight: new THREE.Color(0x2c3752),
+    fujiBodyDay: new THREE.Color(0x5d7484), fujiBodyGold: new THREE.Color(0x66587a), fujiBodyNight: new THREE.Color(0x101a2e),
+    cloudDay: new THREE.Color(0xffffff), cloudGold: new THREE.Color(0xf0c0d0), cloudNight: new THREE.Color(0x39445c),
     stormDay: new THREE.Color(0x59606c), stormNight: new THREE.Color(0x1a1f2a),
     groundDay: new THREE.Color(0x59544a), groundNight: new THREE.Color(0x0d1016),
     white: new THREE.Color(0xffffff), roadSnow: new THREE.Color(0x828a90)
